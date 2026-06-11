@@ -1,0 +1,188 @@
+.data-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+}
+
+.data-grid__toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.data-grid__count {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.data-grid__columns-btn {
+  font-size: 0.875rem;
+  padding: 0.375rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-elevated);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.data-grid__columns-btn:hover {
+  border-color: var(--primary);
+}
+
+.data-grid__column-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  padding: 0.75rem;
+  background: var(--surface-elevated);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.data-grid__column-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.data-grid__table-wrap {
+  overflow-x: auto;
+  min-height: 12rem;
+}
+
+.data-grid__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.data-grid__table th,
+.data-grid__table td {
+  padding: 0.625rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.data-grid__table th {
+  background: var(--surface-elevated);
+  font-weight: 600;
+  vertical-align: top;
+}
+
+.data-grid__table tbody tr:hover {
+  background: var(--row-hover);
+}
+
+.data-grid__header-cell {
+  margin-bottom: 0.375rem;
+}
+
+.data-grid__sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  color: inherit;
+  cursor: pointer;
+}
+
+.data-grid__sort-btn:hover {
+  color: var(--primary);
+}
+
+.data-grid__filter {
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8125rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.data-grid__state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 12rem;
+  color: var(--text-muted);
+}
+
+.data-grid__state--error {
+  color: var(--danger);
+}
+
+.data-grid__spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.data-grid__pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.data-grid__page-size {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.data-grid__page-size select {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.data-grid__page-buttons {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.data-grid__page-buttons button {
+  min-width: 2rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-elevated);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.data-grid__page-buttons button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.data-grid__page-buttons button:not(:disabled):hover {
+  border-color: var(--primary);
+}
