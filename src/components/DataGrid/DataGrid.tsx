@@ -33,9 +33,12 @@ export function DataGrid<T extends Record<string, unknown>>({
   pageSize: initialPageSize = 10,
   pageSizeOptions = [10, 25, 50],
   loading = false,
+  skeleton = false,
+  skeletonRows = 8,
   error = null,
   emptyMessage = 'No records found.',
   onColumnVisibilityChange,
+  onRowClick,
   className = '',
 }: DataGridProps<T>) {
   const [page, setPage] = useState(0);
@@ -52,10 +55,15 @@ export function DataGrid<T extends Record<string, unknown>>({
     [columns, hiddenColumns],
   );
 
+  const hasActiveFilters = useMemo(
+    () => Object.values(filters).some((value) => value.trim() !== ''),
+    [filters],
+  );
+
   const filteredData = useMemo(() => {
     return data.filter((row) =>
       visibleColumns.every((column) => {
-        if (!column.filterable) return true;
+        if (column.filterable === false) return true;
         const filterValue = filters[column.id]?.trim().toLowerCase();
         if (!filterValue) return true;
         const cellValue = getCellValue(row, column);
@@ -90,7 +98,12 @@ export function DataGrid<T extends Record<string, unknown>>({
 
   const updateFilter = (columnId: string, value: string) => {
     setPage(0);
-    setFilters((prev) => ({ ...prev, [columnId]: value }));
+    setFilters((prev) => ({ ...prev, [columnId]: value.trimStart() }));
+  };
+
+  const clearFilters = () => {
+    setPage(0);
+    setFilters({});
   };
 
   const toggleColumnVisibility = (columnId: string) => {
@@ -116,17 +129,26 @@ export function DataGrid<T extends Record<string, unknown>>({
     <div className={`data-grid ${className}`.trim()} role="region" aria-label="Data table">
       <div className="data-grid__toolbar">
         <span className="data-grid__count" aria-live="polite">
-          {loading ? 'Loading…' : `${sortedData.length} record${sortedData.length === 1 ? '' : 's'}`}
+          {loading || skeleton
+            ? 'Loading…'
+            : `${sortedData.length} record${sortedData.length === 1 ? '' : 's'}`}
         </span>
-        <button
-          type="button"
-          className="data-grid__columns-btn"
-          aria-expanded={showColumnPanel}
-          aria-controls="column-visibility-panel"
-          onClick={() => setShowColumnPanel((v) => !v)}
-        >
-          Columns
-        </button>
+        <div className="data-grid__toolbar-actions">
+          {hasActiveFilters && (
+            <button type="button" className="data-grid__clear-filters-btn" onClick={clearFilters}>
+              Clear filters
+            </button>
+          )}
+          <button
+            type="button"
+            className="data-grid__columns-btn"
+            aria-expanded={showColumnPanel}
+            aria-controls="column-visibility-panel"
+            onClick={() => setShowColumnPanel((v) => !v)}
+          >
+            Columns
+          </button>
+        </div>
       </div>
 
       {showColumnPanel && (
@@ -144,17 +166,43 @@ export function DataGrid<T extends Record<string, unknown>>({
         </div>
       )}
 
-      <div className="data-grid__table-wrap">
+      <div className="data-grid__table-wrap" aria-busy={loading || skeleton}>
         {loading ? (
           <div className="data-grid__state" role="status">
             <div className="data-grid__spinner" aria-hidden="true" />
             <p>Loading data…</p>
           </div>
+        ) : skeleton ? (
+          <table className="data-grid__table data-grid__table--skeleton" aria-hidden="true">
+            <thead>
+              <tr>
+                {visibleColumns.map((column) => (
+                  <th key={column.id} scope="col">
+                    <span className="data-grid__skeleton data-grid__skeleton--label" />
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {Array.from({ length: skeletonRows }, (_, rowIndex) => (
+                <tr key={rowIndex}>
+                  {visibleColumns.map((column) => (
+                    <td key={column.id}>
+                      <span
+                        className="data-grid__skeleton"
+                        style={{ width: `${55 + ((rowIndex + column.id.length) % 4) * 10}%` }}
+                      />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         ) : error ? (
           <div className="data-grid__state data-grid__state--error" role="alert">
             <p>{error}</p>
           </div>
-        ) : sortedData.length === 0 ? (
+        ) : data.length === 0 ? (
           <div className="data-grid__state" role="status">
             <p>{emptyMessage}</p>
           </div>
@@ -194,24 +242,50 @@ export function DataGrid<T extends Record<string, unknown>>({
               </tr>
             </thead>
             <tbody>
-              {pageData.map((row) => (
-                <tr key={getRowKey(row, rowKey)}>
-                  {visibleColumns.map((column) => {
-                    const value = getCellValue(row, column);
-                    return (
-                      <td key={column.id}>
-                        {column.render ? column.render(value, row) : String(value ?? '')}
-                      </td>
-                    );
-                  })}
+              {pageData.length === 0 ? (
+                <tr className="data-grid__empty-row">
+                  <td colSpan={visibleColumns.length}>
+                    <div className="data-grid__empty-in-table" role="status">
+                      <p>
+                        {hasActiveFilters
+                          ? 'No records match your filters. Use Clear filters above or edit the filter fields.'
+                          : emptyMessage}
+                      </p>
+                    </div>
+                  </td>
                 </tr>
-              ))}
+              ) : (
+                pageData.map((row) => (
+                  <tr
+                    key={getRowKey(row, rowKey)}
+                    className={onRowClick ? 'data-grid__row--interactive' : undefined}
+                    tabIndex={onRowClick ? 0 : undefined}
+                    onClick={() => onRowClick?.(row)}
+                    onKeyDown={(e) => {
+                      if (!onRowClick) return;
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        onRowClick(row);
+                      }
+                    }}
+                  >
+                    {visibleColumns.map((column) => {
+                      const value = getCellValue(row, column);
+                      return (
+                        <td key={column.id}>
+                          {column.render ? column.render(value, row) : String(value ?? '')}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         )}
       </div>
 
-      {!loading && !error && sortedData.length > 0 && (
+      {!loading && !skeleton && !error && sortedData.length > 0 && (
         <div className="data-grid__pagination" role="navigation" aria-label="Table pagination">
           <label className="data-grid__page-size">
             Rows per page

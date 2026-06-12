@@ -24,8 +24,11 @@ export interface DataGridProps<T extends Record<string, unknown>> {
   pageSize?: number;
   pageSizeOptions?: number[];
   loading?: boolean;
+  skeleton?: boolean;
+  skeletonRows?: number;
   error?: string | null;
   emptyMessage?: string;
   onColumnVisibilityChange?: (columnId: string, visible: boolean) => void;
+  onRowClick?: (row: T) => void;
   className?: string;
 }

@@ -19,5 +19,9 @@ export interface TimelineProps<T extends TimelineEvent> {
   formatGroupLabel?: (groupKey: string, events: T[]) => string;
   renderEvent?: (event: T) => ReactNode;
   emptyMessage?: string;
+  selectedEventId?: string | null;
+  onEventActivate?: (event: T) => void;
+  onEventEdit?: (event: T) => void;
+  onEventDelete?: (event: T) => void;
   className?: string;
 }

@@ -1,6 +1,6 @@
 # Genetec React Technical Assessment
 
-A small component library with three reusable React components, showcased in a Security Operations Console demo app.
+**Alarm & Work Order Console** — a reusable component library showcased in an operator-facing security operations workspace.
 
 ## Quick start
 
@@ -10,69 +10,109 @@ npm run dev
 ```
 
 ```bash
-npm run build   # production build
-npm run preview # preview production build
+npm run build
+npm run preview
+npm test
+npm run test:run
 ```
+
+## Live demo
+
+After pushing to GitHub:
+
+1. Open **Settings → Pages → Build and deployment**
+2. Set **Source** to **GitHub Actions**
+3. Push to `main` — the [Deploy workflow](.github/workflows/deploy.yml) publishes the app
+
+Live URL:
+
+```text
+https://<your-github-username>.github.io/<repository-name>/
+```
+
+## Product context
+
+The demo models Genetec's alarm and work-order domain:
+
+- **Statuses:** `scheduled` → `acknowledged` → `resolved`
+- **Categories:** Access, Video, Intrusion, Patrol
+- **Views:** grid for triage, timeline for shift handover, detail drawer for investigation
+
+## Event-driven state
+
+Alarm lifecycle changes flow through a small `eventsReducer` (`EVENT_CREATED`, `EVENT_UPDATED`, `EVENT_DELETED`). Both the DataGrid and Timeline subscribe to the same store, so a single domain event keeps every operator view in sync. This mirrors how alarm platforms propagate state changes to dashboards, timelines, and detail panes without each view owning its own copy of the data.
 
 ## Components
 
 ### DataGrid
 
-Generic, client-side data table with:
-
-- Pagination, sorting, and per-column text filtering
-- Loading, empty, and error states
-- Column configuration: label, accessor (key or function), hide/show toggle panel
-- Custom cell rendering via `render` prop
+Generic client-side table with pagination, sorting, filtering, loading/skeleton/empty/error states, column visibility, and row selection.
 
 ### Timeline
 
-Keyboard-navigable event timeline with:
-
-- **Grouping by day** — operational security events are naturally scheduled and reviewed per calendar day; this matches how teams plan shifts and audits.
-- Arrow key navigation: Left/Right within a day, Up/Down across days and events
-- Screen-reader announcements via `aria-live` when focus moves between groups and items
+Keyboard-navigable timeline grouped by day. Left/Right moves between an event and its action menu; Up/Down moves between days and events. Screen-reader announcements and a visible focus bar. View details, Edit, and Delete are available from the ⋯ action menu.
 
 ### EventForm
 
-Controlled add/edit form with:
+Controlled add/edit form with validation, focus management, cancel/save actions, and `EventFormDialog` for modal workflows. The home page includes an interactive showcase (inline and modal variants).
 
-- Required title and valid date validation
-- Inline error messages and focus on first invalid field on submit
-- Cancel / save actions
-- Success message region (`role="status"`, `aria-live="polite"`)
+### Drawer
 
-## Demo app
+Animated side panel for work order investigation with description, location, and status.
 
-Single-page app featuring:
+## Demo flows
 
-- **DataGrid** fed by 250 mock events (toggle buttons demo loading / error / empty states)
-- **Timeline** rendering the same events, grouped by day
-- **New Event** button opening a modal form; saved events appear in both grid and timeline
+- Start on the **home page** (module cards) and open DataGrid, EventForm, or Timeline — each module page includes a component overview panel
+- **Grid:** click a row to open the detail drawer; use demo controls for loading/empty/error states
+- **Timeline:** arrow-key navigation; ⋯ → View details / Edit / Delete
+- **EventForm:** switch showcase variants; header **+ New Work Order** creates a real record in the shared store
+- Edit from the drawer or timeline action menu
+
+## CI
+
+[GitHub Actions](.github/workflows/ci.yml) runs on every push and pull request to `main`:
+
+- `npm ci`
+- `npm run test:run`
+- `npm run build`
 
 ## Technical choices
 
 | Area | Choice | Rationale |
 |------|--------|-----------|
-| Tooling | Vite + React 19 + TypeScript | Fast dev experience, strong typing for reusable APIs |
-| State | React `useState` in the app | Straightforward for a demo-sized dataset; no extra dependencies |
-| Styling | Plain CSS with design tokens | Keeps components portable without tying them to a UI framework |
-| Modal | Native `<dialog>` | Built-in focus trap and backdrop, accessible by default |
-| Data | Generated mock events | 250 rows spanning ±2 months around today |
+| Tooling | Vite + React 19 + TypeScript | Fast iteration with strong component APIs |
+| State | `useReducer` events store | Event-driven updates across grid, timeline, and drawer |
+| Styling | CSS custom properties | Portable components without a UI framework lock-in |
+| Modal / Drawer | Native patterns + accessible markup | Focus handling without heavy dependencies |
+| Deployment | GitHub Pages | Zero-cost public demo linked from the submission email |
 
 ## Project structure
 
-```
+```text
 src/
   components/
     DataGrid/
     Timeline/
     EventForm/
-    Modal/
+    Drawer/
+    EventDetail/
+    StatusBadge/
+    ModuleOverview/
+  store/
+  content/componentCatalog.ts
+  pages/HomePage.tsx
   data/mockEvents.ts
   types/event.ts
+  utils/event.ts
   App.tsx
+.github/workflows/
+  ci.yml
+  deploy.yml
 ```
+
+## Tests
+
+Vitest + React Testing Library cover components, the events reducer, and app flows for create, edit, delete, and detail drawer access.
 
 ## Author
 

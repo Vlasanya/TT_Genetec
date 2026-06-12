@@ -1,27 +1,31 @@
-import type { Event, EventStatus } from '../types/event';
+import {
+  EVENT_CATEGORIES,
+  EVENT_STATUSES,
+  type Event,
+  type EventCategory,
+  type EventStatus,
+} from '../types/event';
 
-const CATEGORIES = ['Security', 'Access Control', 'Maintenance', 'Training', 'Audit'];
-const STATUSES: EventStatus[] = ['scheduled', 'completed', 'cancelled'];
 const LOCATIONS = ['Building A', 'Building B', 'Parking Garage', 'Lobby', 'Server Room'];
 const TITLES = [
-  'Camera firmware update',
-  'Badge access review',
-  'Fire drill coordination',
-  'Visitor escort briefing',
-  'Perimeter patrol',
-  'Alarm panel inspection',
-  'New hire security orientation',
-  'License plate recognition tuning',
-  'Emergency exit audit',
-  'Shift handover',
-  'Intrusion sensor calibration',
-  'Parking gate maintenance',
-  'CCTV coverage assessment',
-  'Incident response drill',
-  'Vendor credential renewal',
+  'Door forced alarm',
+  'Camera offline',
+  'Perimeter breach detected',
+  'Badge tailgating incident',
+  'Patrol checkpoint missed',
+  'Video analytics false positive',
+  'Access policy violation',
+  'Intrusion zone trip',
+  'Work order assignment',
+  'Escalation to operator',
+  'Sensor calibration',
+  'Patrol route deviation',
+  'NVR storage threshold',
+  'Visitor access request',
+  'Alarm acknowledgement overdue',
 ];
 
-function randomItem<T>(arr: T[]): T {
+function randomItem<T>(arr: readonly T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
@@ -40,9 +44,9 @@ export function generateMockEvents(count: number): Event[] {
     id: `evt-${String(i + 1).padStart(4, '0')}`,
     title: `${randomItem(TITLES)} #${i + 1}`,
     date: randomDate(start, end),
-    category: randomItem(CATEGORIES),
-    status: randomItem(STATUSES),
-    description: `Operational event recorded for site monitoring and compliance.`,
+    category: randomItem(EVENT_CATEGORIES) as EventCategory,
+    status: randomItem(EVENT_STATUSES) as EventStatus,
+    description: 'Alarm or work order item tracked for operator review and resolution.',
     location: randomItem(LOCATIONS),
   }));
 }

@@ -1,26 +1,39 @@
 import { useId, useRef, useState } from 'react';
-import type { EventFormValues } from '../../types/event';
 import type { EventFormProps } from './types';
-import { EMPTY_FORM_VALUES } from './types';
+import {
+  DEFAULT_CATEGORY_OPTIONS,
+  DEFAULT_STATUS_OPTIONS,
+  EMPTY_FORM_VALUES,
+  type EventFormValues,
+} from './types';
 import { getFirstErrorField, validateEventForm } from './validation';
 import './EventForm.css';
 
-const CATEGORIES = ['Security', 'Access Control', 'Maintenance', 'Training', 'Audit'];
-
 export function EventForm({
+  mode,
   initialValues,
+  categoryOptions = DEFAULT_CATEGORY_OPTIONS,
+  statusOptions = DEFAULT_STATUS_OPTIONS,
   onSave,
   onCancel,
   submitLabel = 'Save event',
+  cancelLabel = 'Cancel',
+  addTitle = 'Add event',
+  editTitle = 'Edit event',
+  successMessage = 'Event saved successfully.',
+  showHeader = true,
   className = '',
 }: EventFormProps) {
   const formId = useId();
+  const resolvedMode = mode ?? (initialValues?.title ? 'edit' : 'add');
   const [values, setValues] = useState<EventFormValues>({
     ...EMPTY_FORM_VALUES,
+    category: categoryOptions[0]?.value ?? EMPTY_FORM_VALUES.category,
+    status: statusOptions[0]?.value ?? EMPTY_FORM_VALUES.status,
     ...initialValues,
   });
   const [errors, setErrors] = useState<Partial<Record<keyof EventFormValues, string>>>({});
-  const [successMessage, setSuccessMessage] = useState('');
+  const [successText, setSuccessText] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const fieldRefs = useRef<Partial<Record<keyof EventFormValues, HTMLElement | null>>>({});
 
@@ -30,7 +43,7 @@ export function EventForm({
       const nextValues = { ...values, [field]: value };
       setErrors(validateEventForm(nextValues));
     }
-    setSuccessMessage('');
+    setSuccessText('');
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -54,7 +67,7 @@ export function EventForm({
       description: values.description.trim(),
       location: values.location.trim(),
     });
-    setSuccessMessage('Event saved successfully.');
+    setSuccessText(successMessage);
   };
 
   const fieldErrorId = (field: keyof EventFormValues) => `${formId}-${field}-error`;
@@ -64,19 +77,16 @@ export function EventForm({
       className={`event-form ${className}`.trim()}
       onSubmit={handleSubmit}
       noValidate
-      aria-labelledby={`${formId}-title`}
+      aria-labelledby={showHeader ? `${formId}-title` : undefined}
     >
-      <h2 id={`${formId}-title`} className="event-form__title">
-        {initialValues?.title ? 'Edit event' : 'Add event'}
-      </h2>
+      {showHeader && (
+        <h2 id={`${formId}-title`} className="event-form__title">
+          {resolvedMode === 'edit' ? editTitle : addTitle}
+        </h2>
+      )}
 
-      <div
-        className="event-form__success"
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-      >
-        {successMessage}
+      <div className="event-form__success" role="status" aria-live="polite" aria-atomic="true">
+        {successText}
       </div>
 
       <div className="event-form__field">
@@ -128,9 +138,9 @@ export function EventForm({
             value={values.category}
             onChange={(e) => updateField('category', e.target.value)}
           >
-            {CATEGORIES.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
+            {categoryOptions.map((category) => (
+              <option key={category.value} value={category.value}>
+                {category.label}
               </option>
             ))}
           </select>
@@ -141,11 +151,13 @@ export function EventForm({
           <select
             id={`${formId}-status-input`}
             value={values.status}
-            onChange={(e) => updateField('status', e.target.value as EventFormValues['status'])}
+            onChange={(e) => updateField('status', e.target.value)}
           >
-            <option value="scheduled">Scheduled</option>
-            <option value="completed">Completed</option>
-            <option value="cancelled">Cancelled</option>
+            {statusOptions.map((status) => (
+              <option key={status.value} value={status.value}>
+                {status.label}
+              </option>
+            ))}
           </select>
         </div>
       </div>
@@ -172,7 +184,7 @@ export function EventForm({
 
       <div className="event-form__actions">
         <button type="button" className="event-form__btn event-form__btn--secondary" onClick={onCancel}>
-          Cancel
+          {cancelLabel}
         </button>
         <button type="submit" className="event-form__btn event-form__btn--primary">
           {submitLabel}

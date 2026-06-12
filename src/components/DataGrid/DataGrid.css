@@ -20,6 +20,28 @@
   color: var(--text-muted);
 }
 
+.data-grid__toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.data-grid__clear-filters-btn {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-elevated);
+  color: var(--text);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.data-grid__clear-filters-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
 .data-grid__columns-btn {
   font-size: 0.875rem;
   padding: 0.375rem 0.75rem;
@@ -80,6 +102,15 @@
   background: var(--row-hover);
 }
 
+.data-grid__row--interactive {
+  cursor: pointer;
+}
+
+.data-grid__row--interactive:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
 .data-grid__header-cell {
   margin-bottom: 0.375rem;
 }
@@ -111,6 +142,25 @@
   color: var(--text);
 }
 
+.data-grid__empty-row td {
+  padding: 2rem 0.75rem;
+  text-align: center;
+  border-bottom: none;
+}
+
+.data-grid__empty-in-table {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.data-grid__empty-in-table p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
 .data-grid__state {
   display: flex;
   flex-direction: column;
@@ -137,6 +187,37 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+.data-grid__table--skeleton {
+  pointer-events: none;
+}
+
+.data-grid__skeleton {
+  display: block;
+  height: 0.875rem;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    90deg,
+    var(--border) 0%,
+    var(--row-hover) 50%,
+    var(--border) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.2s ease-in-out infinite;
+}
+
+.data-grid__skeleton--label {
+  width: 4.5rem;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
   }
 }
 
@@ -185,4 +266,24 @@
 
 .data-grid__page-buttons button:not(:disabled):hover {
   border-color: var(--primary);
+}
+
+@media (max-width: 640px) {
+  .data-grid {
+    padding: 0.75rem;
+  }
+
+  .data-grid__toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .data-grid__pagination {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .data-grid__page-buttons {
+    justify-content: center;
+  }
 }

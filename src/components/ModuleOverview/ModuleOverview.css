@@ -1,0 +1,114 @@
+.module-overview {
+  padding: 1.25rem 1.25rem 1.25rem 1.375rem;
+  margin-bottom: 1.5rem;
+
+  box-shadow: var(--shadow-sm, 0 1px 2px rgb(0 0 0 / 0.06));
+  scroll-margin-top: 5.5rem;
+}
+
+.module-overview__eyebrow {
+  margin: 0 0 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.module-overview__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.module-overview h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.module-overview__path {
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--radius-sm);
+  background: var(--surface-elevated);
+  color: var(--text-muted);
+}
+
+.module-overview__summary {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.module-overview__note {
+  margin: 0 0 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border-left: 3px solid var(--primary);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--surface-elevated);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.module-overview__capabilities {
+  margin: 0 0 0.75rem;
+  padding-left: 1.125rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.module-overview__hint {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.module-overview__hint strong {
+  color: var(--text);
+}
+
+.module-overview__related {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--border);
+}
+
+.module-overview__related h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.module-overview__related ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.module-overview__related li {
+  display: grid;
+  gap: 0.125rem;
+  font-size: 0.8125rem;
+}
+
+.module-overview__related code {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.module-overview__related span {
+  color: var(--text-muted);
+}

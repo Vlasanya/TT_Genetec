@@ -1,4 +1,4 @@
-import type { EventFormValues } from '../../types/event';
+import type { EventFormValues } from './types';
 
 export type FormErrors = Partial<Record<keyof EventFormValues, string>>;
 
