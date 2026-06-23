@@ -53,6 +53,7 @@ export interface EventFormProps {
 export interface EventFormDialogProps {
   isOpen: boolean;
   mode: 'add' | 'edit';
+  formKey?: number;
   initialValues?: Partial<EventFormValues>;
   onSave: (values: EventFormValues) => void;
   onClose: () => void;

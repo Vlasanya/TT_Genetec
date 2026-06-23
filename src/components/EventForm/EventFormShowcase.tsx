@@ -132,6 +132,7 @@ export function EventFormShowcase() {
       <EventFormDialog
         isOpen={dialog.isOpen}
         mode={dialog.mode}
+        formKey={dialog.formKey}
         initialValues={dialog.initialValues}
         onSave={() => dialog.close()}
         onClose={dialog.close}

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Event } from '../types/event';
-import { createEvent, toFormValues, updateEvent } from './event';
+import { createEvent, createEventId, toFormValues, updateEvent } from './event';
 
 const sampleEvent: Event = {
   id: 'evt-1',
@@ -37,7 +37,14 @@ describe('event utils', () => {
     expect(event.title).toBe('Patrol');
     expect(event.description).toBe('Done');
     expect(event.location).toBe('Garage');
-    expect(event.id).toMatch(/^evt-/);
+    expect(event.id).toMatch(
+      /^evt-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
+    );
+  });
+
+  it('generates unique event ids', () => {
+    const ids = new Set(Array.from({ length: 10 }, () => createEventId()));
+    expect(ids.size).toBe(10);
   });
 
   it('updates an existing event from form values', () => {

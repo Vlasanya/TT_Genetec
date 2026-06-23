@@ -235,6 +235,7 @@ function App() {
       <EventFormDialog
         isOpen={eventForm.isOpen}
         mode={eventForm.mode}
+        formKey={eventForm.formKey}
         initialValues={eventForm.initialValues}
         onSave={handleSaveEvent}
         onClose={closeForm}

@@ -56,4 +56,25 @@ describe('EventFormDialog', () => {
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
     expect(onClose).toHaveBeenCalledOnce();
   });
+
+  it('resets the form when reopened with a new formKey', async () => {
+    const user = userEvent.setup();
+
+    const { rerender } = render(
+      <EventFormDialog isOpen formKey={1} mode="add" onSave={vi.fn()} onClose={vi.fn()} />,
+    );
+
+    await user.type(screen.getByLabelText('Title *'), 'Stale title');
+    expect(screen.getByLabelText('Title *')).toHaveValue('Stale title');
+
+    rerender(
+      <EventFormDialog isOpen={false} formKey={1} mode="add" onSave={vi.fn()} onClose={vi.fn()} />,
+    );
+
+    rerender(
+      <EventFormDialog isOpen formKey={2} mode="add" onSave={vi.fn()} onClose={vi.fn()} />,
+    );
+
+    expect(screen.getByLabelText('Title *')).toHaveValue('');
+  });
 });

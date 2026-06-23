@@ -13,7 +13,7 @@ export function toFormValues(event: Event): EventFormValues {
 }
 
 export function createEventId(): string {
-  return `evt-${Date.now()}`;
+  return `evt-${crypto.randomUUID()}`;
 }
 
 export function createEvent(values: EventFormValues): Event {

@@ -5,6 +5,7 @@ export interface EventFormDialogState {
   isOpen: boolean;
   mode: 'add' | 'edit';
   initialValues?: Partial<EventFormValues>;
+  formKey: number;
 }
 
 export function useEventFormDialog() {
@@ -12,14 +13,25 @@ export function useEventFormDialog() {
     isOpen: false,
     mode: 'add',
     initialValues: undefined,
+    formKey: 0,
   });
 
   const openAdd = useCallback(() => {
-    setState({ isOpen: true, mode: 'add', initialValues: undefined });
+    setState((current) => ({
+      isOpen: true,
+      mode: 'add',
+      initialValues: undefined,
+      formKey: current.formKey + 1,
+    }));
   }, []);
 
   const openEdit = useCallback((initialValues: Partial<EventFormValues>) => {
-    setState({ isOpen: true, mode: 'edit', initialValues });
+    setState((current) => ({
+      isOpen: true,
+      mode: 'edit',
+      initialValues,
+      formKey: current.formKey + 1,
+    }));
   }, []);
 
   const close = useCallback(() => {
@@ -30,6 +42,7 @@ export function useEventFormDialog() {
     isOpen: state.isOpen,
     mode: state.mode,
     initialValues: state.initialValues,
+    formKey: state.formKey,
     openAdd,
     openEdit,
     close,

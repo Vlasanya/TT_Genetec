@@ -5,6 +5,7 @@ import type { EventFormDialogProps } from './types';
 export function EventFormDialog({
   isOpen,
   mode,
+  formKey = 0,
   initialValues,
   onSave,
   onClose,
@@ -18,19 +19,21 @@ export function EventFormDialog({
 }: EventFormDialogProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={mode === 'edit' ? editTitle : addTitle}>
-      <EventForm
-        key={`${mode}-${initialValues?.title ?? 'new'}-${initialValues?.date ?? ''}`}
-        mode={mode}
-        initialValues={initialValues}
-        categoryOptions={categoryOptions}
-        statusOptions={statusOptions}
-        onSave={onSave}
-        onCancel={onClose}
-        submitLabel={submitLabel}
-        cancelLabel={cancelLabel}
-        successMessage={successMessage}
-        showHeader={false}
-      />
+      {isOpen ? (
+        <EventForm
+          key={formKey}
+          mode={mode}
+          initialValues={initialValues}
+          categoryOptions={categoryOptions}
+          statusOptions={statusOptions}
+          onSave={onSave}
+          onCancel={onClose}
+          submitLabel={submitLabel}
+          cancelLabel={cancelLabel}
+          successMessage={successMessage}
+          showHeader={false}
+        />
+      ) : null}
     </Modal>
   );
 }
